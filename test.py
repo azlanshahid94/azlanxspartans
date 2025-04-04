@@ -1,7 +1,52 @@
+import os
+import sys
+import uuid
 import time
+import requests
 import webbrowser
 
-def fancy_banner():
+def logo():
+    os.system("clear")
+    print(banner)
+
+def get_device_key():
+    key_file_path = os.path.expanduser("~/.AZLAN_key.txt")
+    if os.path.exists(key_file_path):
+        with open(key_file_path, 'r') as file:
+            return file.read().strip()
+
+    device_id = uuid.getnode()
+    device_key = f"AZLAN-{device_id}"
+
+    with open(key_file_path, 'w') as file:
+        file.write(device_key)
+
+    return device_key
+
+def validate_key(user_key):
+    pastebin_url = 'https://pastebin.com/raw/Nv7Ja3H9'  # Replace with your actual Pastebin raw URL
+    try:
+        response = requests.get(pastebin_url)
+        approved_keys = response.text.splitlines()
+
+        if user_key in approved_keys:
+            logo()
+            print("\n Your Key Is Approved by Owner \n \n - Enjoy Tool By Spartans <3 - \n")
+            return True
+        else:
+            logo()
+            print("        Sorry Sir! Your Key Is Not Approved By Owner")
+            print("\n[->] Your Key: " + user_key)
+            print("[->] Copy Your Key And Send To Owner")
+            input("[>>] Press Enter")
+            os.system("xdg-open https://wa.me/994409764173")
+            time.sleep(2)
+            sys.exit()
+    except Exception as e:
+        print(f"\n[×] Error : {e}")
+        sys.exit()
+
+        def fancy_banner():
     """Display a professional two-line SPARTANS banner"""
     banner = """
  __   __        __  ___            __  
@@ -191,36 +236,46 @@ ____________________________________________
     execute_server()
     send_messages()
 
-def main():
+def main_tool():
     fancy_banner()
     print("\n🔥 Welcome to Spartans Tool! Choose an option: 🔥\n")
-
     while True:
         print("1️⃣  Post Tool")
         print("2️⃣  Convo Tool")
         print("3️⃣  Owner Facebook Account")
         print("4️⃣  Exit")
-
         choice = input("\nEnter your choice (1-4): ")
 
         if choice == "1":
             print("\n📝 Opening Post Tool...\n")
             send_messages()
-
         elif choice == "2":
             print("\n💬 Opening Convo Tool...\n")
             send_comment()
-
         elif choice == "3":
             print("\n🔗 Opening Facebook Account...\n")
             webbrowser.open("https://m.facebook.com/azlan.spartans.94")
-
         elif choice == "4":
             print("\n👋 Exiting... Goodbye!")
             break  
-
         else:
             print("\n❌ Invalid choice, please try again!\n")
 
-if __name__ == "__main__":
+def main():
+    global banner
+    banner = """
+     ___      ________   __          ___      .__   __. 
+    /   \    |       /  |  |        /   \     |  \ |  | 
+   /  ^  \   `---/  /   |  |       /  ^  \    |   \|  | 
+  /  /_\  \     /  /    |  |      /  /_\  \   |  . `  | 
+ /  _____  \   /  /----.|  `----./  _____  \  |  |\   | 
+/__/     \__\ /________||_______/__/     \__\ |__| \__| 
+------------------------- -------------------------------
+"""
+    logo()
+    my_key = get_device_key()
+    if validate_key(my_key):
+        main_tool()
+
+if __name__ == '__main__':
     main()
